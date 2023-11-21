@@ -4,6 +4,12 @@ unsigned long duration;
 unsigned int distance;
 bool Ball_erkannt = false;
 
+double start_time;
+double end_time;
+int Ball_Status = 1;
+double v;
+double s = 0.1; // Strecke des Sichtfeldes in m
+
 bool Ballerkennung (int PIN_TRIGGER, int PIN_ECHO)
 {
   digitalWrite(PIN_TRIGGER, LOW);
@@ -25,4 +31,27 @@ bool Ballerkennung (int PIN_TRIGGER, int PIN_ECHO)
 
   delay(1000);
 return Ball_erkannt;
+}
+double Geschwindigkeitsmessung (bool Ball_erkannt)
+{
+    switch(Ball_Status)
+    {
+        case 1:
+        // Ball nicht im Sichtfeld
+        if (Ball_erkannt==true){
+            Ball_Status = 2;
+            start_time = millis();
+            v = 0;
+
+        }
+        case 2:
+        //Ball in das Sichtfeld eingedrungen
+        if (Ball_erkannt==false){
+            Ball_Status = 1;
+            end_time =  millis() - start_time;
+            v = s * end_time;
+
+        }
+    }
+    return v;
 }
