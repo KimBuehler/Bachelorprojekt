@@ -1,18 +1,21 @@
 #include <Arduino.h>
+#include <UltraschallSensor>
 
-// put function declarations here:
-int myFunction(int, int);
+#define PIN_TRIGGER 12
+#define PIN_ECHO    13
+
 
 void setup() {
-  // put your setup code here, to run once:
-  int result = myFunction(2, 3);
+  Serial.begin(9600);
+  pinMode(PIN_TRIGGER, OUTPUT);
+  pinMode(PIN_ECHO, INPUT);
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
+void loop() {  
+  bool Ball_erkannt = Ballerkennung(PIN_TRIGGER, PIN_ECHO);
+  if Ball_erkannt == true{
+    // Zeitmessung starten und dann stoppen
+  }
+
 }
 
-// put function definitions here:
-int myFunction(int x, int y) {
-  return x + y;
-}

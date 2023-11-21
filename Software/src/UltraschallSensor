@@ -1,0 +1,28 @@
+// https://elektro.turanis.de/html/prj121/index.html
+const int SENSOR_MAX_RANGE = 30; // in cm
+unsigned long duration;
+unsigned int distance;
+bool Ball_erkannt = false;
+
+bool Ballerkennung (int PIN_TRIGGER, int PIN_ECHO)
+{
+  digitalWrite(PIN_TRIGGER, LOW);
+  delayMicroseconds(2);
+
+  digitalWrite(PIN_TRIGGER, HIGH);
+  delayMicroseconds(10);
+
+  duration = pulseIn(PIN_ECHO, HIGH);
+  distance = duration/58; //Schallgeschwindigkeit des Puls 29µs für 1cm in Luft; Weg hin und zurück, bedeutet Wert auf 58µs verdoppeln
+
+  if (distance > SENSOR_MAX_RANGE){
+    Serial.println("Kein Ball im Sichtfeld!");
+    Ball_erkannt = false;
+  } else {
+    Serial.println("Ball befindet sich im Sichtfeld");
+    Ball_erkannt = true;
+  }
+
+  delay(1000);
+return Ball_erkannt;
+}
