@@ -20,12 +20,15 @@ void setup() {
   stepper.setSpeed(30); // in Umdrehungen/min
 }
 
-void loop() {  
+void loop() { 
+  Winkeleinstellung(Winkel, stepper);
+  Serial.print("Eingestellter Winkel: " + Winkel);
+  Winkel = Winkelueberpruefung();
+  Serial.print("Vorhandener Winkl: " + Winkel); 
   do{
   bool Ball_erkannt = Ballerkennung(PIN_TRIGGER, PIN_ECHO);
   Geschwindigkeit = Geschwindigkeitsmessung(Ball_erkannt); // m/s
   } while (Ball_erkannt==true);
-  
-  Winkeleinstellung(Winkel, stepper);
+  Serial.print(Geschwindigkeit);
 }
 

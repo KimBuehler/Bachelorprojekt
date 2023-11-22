@@ -1,11 +1,21 @@
 // https://www.arduino.cc/reference/en/libraries/stepper/ : Dokumentation zu stepper
+// https://docs.arduino.cc/built-in-examples/basics/AnalogReadSerial : Dokumentation zum Auslesen eines Potentiometers
 #include <Stepper.h> 
 int IstWinkel;
+int EingestellterWinkel;
 
 /*
 Diese Funktion stellt den Abwurfwinkel ein. 
 */
 void Winkeleinstellung (int Wunschwinkel, Stepper stepper){
-  stepper.step(Wunschwinkel - IstWinkel);
-  IstWinkel = Wunschwinkel;
+  stepper.step(Wunschwinkel - EingestellterWinkel);
+  EingestellterWinkel = Wunschwinkel;
+}
+
+/*
+Diese Funktion ueberprueft den Ist-Winkel mit dem Soll-Winkel
+*/
+int Winkelueberpruefung (){
+  IstWinkel = analogRead(A0);
+  return IstWinkel;
 }
