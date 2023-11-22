@@ -1,15 +1,19 @@
-// https://elektro.turanis.de/html/prj121/index.html
+// https://elektro.turanis.de/html/prj121/index.html : Grundlage der Sensorimplementierung
 const int SENSOR_MAX_RANGE = 30; // in cm
 unsigned long duration;
 unsigned int distance;
 bool Ball_erkannt = false;
 
-double start_time;
-double end_time;
+double start_time; // Zeit in Millisekunden
+double end_time; // Zeit in Millisekunden
 int Ball_Status = 1;
-double v;
+unsigned long v;
 double s = 0.1; // Strecke des Sichtfeldes in m
+// Berechnung von s: Durchmesser Ball + tan(Sichtwinkel/2)*Abstand orthogonal
 
+/*
+Diese Funktion ueberprueft, ob ein Gegenstand im Sichtfeld ist.
+*/
 bool Ballerkennung (int PIN_TRIGGER, int PIN_ECHO)
 {
   digitalWrite(PIN_TRIGGER, LOW);
@@ -32,7 +36,12 @@ bool Ballerkennung (int PIN_TRIGGER, int PIN_ECHO)
   delay(1000);
 return Ball_erkannt;
 }
-double Geschwindigkeitsmessung (bool Ball_erkannt)
+
+/*
+Diese FUnktion misst die Zeit und berechnet dann auf Grundlage der Zeit und der Breite des Sichtfeldes die Geschwindigkeit des Gegenstandes.
+*/
+
+unsigned long Geschwindigkeitsmessung (bool Ball_erkannt)
 {
     switch(Ball_Status)
     {
@@ -45,11 +54,11 @@ double Geschwindigkeitsmessung (bool Ball_erkannt)
 
         }
         case 2:
-        //Ball in das Sichtfeld eingedrungen
+        //Ball im Sichtfeld
         if (Ball_erkannt==false){
             Ball_Status = 1;
             end_time =  millis() - start_time;
-            v = s * end_time;
+            v = s * (end_time / 100); // m/s
 
         }
     }

@@ -1,0 +1,8 @@
+// https://www.arduino.cc/reference/en/libraries/stepper/ : Dokumentation zu stepper
+#include <Stepper.h> 
+int IstWinkel;
+
+void Winkeleinstellung (int Wunschwinkel, Stepper stepper){
+  stepper.step(Wunschwinkel - IstWinkel);
+  IstWinkel = Wunschwinkel;
+}
