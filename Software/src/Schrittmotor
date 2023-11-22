@@ -2,6 +2,9 @@
 #include <Stepper.h> 
 int IstWinkel;
 
+/*
+Diese Funktion stellt den Abwurfwinkel ein. 
+*/
 void Winkeleinstellung (int Wunschwinkel, Stepper stepper){
   stepper.step(Wunschwinkel - IstWinkel);
   IstWinkel = Wunschwinkel;
