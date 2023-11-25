@@ -3,13 +3,22 @@
 #include <Stepper.h> 
 int IstWinkel;
 int EingestellterWinkel;
+bool direction; // false = Im Uhrzeigersinn; true = Gegen den Uhrzeigersinn
 
 /*
 Diese Funktion stellt den Abwurfwinkel ein. 
 */
-void Winkeleinstellung (int Wunschwinkel, Stepper stepper){
-  stepper.step(Wunschwinkel - EingestellterWinkel);
-  EingestellterWinkel = Wunschwinkel;
+void Winkeleinstellung (int Wunschwinkel){
+  Serial.println("Motor");
+  direction = true; 
+  digitalWrite(4, LOW);
+    for(int stepCounter = 0; stepCounter < 10; stepCounter++) {
+      digitalWrite(5,HIGH);
+    delayMicroseconds(500);
+    digitalWrite(5,LOW);
+    delayMicroseconds(500);
+    }
+delay(1000);
 }
 
 /*
