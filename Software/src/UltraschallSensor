@@ -9,7 +9,7 @@ double start_time; // Zeit in Millisekunden
 double end_time; // Zeit in Millisekunden
 int Ball_Status = 1;
 unsigned long v;
-double s = 0.1; // Strecke des Sichtfeldes in m
+double s = 0.03; // Strecke des Sichtfeldes in m
 // Berechnung von s: Durchmesser Ball + tan(Sichtwinkel/2)*Abstand orthogonal
 
 /*
@@ -38,7 +38,7 @@ return Ball_erkannt;
 }
 
 /*
-Diese FUnktion misst die Zeit und berechnet dann auf Grundlage der Zeit und der Breite des Sichtfeldes die Geschwindigkeit des Gegenstandes.
+Diese Funktion misst die Zeit und berechnet dann auf Grundlage der Zeit und der Breite des Sichtfeldes die Geschwindigkeit des Gegenstandes.
 */
 
 unsigned long Geschwindigkeitsmessung (bool Ball_erkannt)

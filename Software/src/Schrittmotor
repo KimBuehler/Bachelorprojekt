@@ -1,22 +1,27 @@
-// https://www.arduino.cc/reference/en/libraries/stepper/ : Dokumentation zu stepper
+// https://starthardware.org/arduino-a4988-nema17/ : Informationen fuer die Steuerung des Schrittmotors
 // https://docs.arduino.cc/built-in-examples/basics/AnalogReadSerial : Dokumentation zum Auslesen eines Potentiometers
-#include <Stepper.h> 
 int IstWinkel;
 int EingestellterWinkel;
-bool direction; // false = Im Uhrzeigersinn; true = Gegen den Uhrzeigersinn
+int steps;
+
 
 /*
 Diese Funktion stellt den Abwurfwinkel ein. 
 */
-void Winkeleinstellung (int Wunschwinkel){
-  Serial.println("Motor");
-  direction = true; 
-  digitalWrite(4, LOW);
-    for(int stepCounter = 0; stepCounter < 10; stepCounter++) {
-      digitalWrite(5,HIGH);
-    delayMicroseconds(500);
-    digitalWrite(5,LOW);
-    delayMicroseconds(500);
+void Winkeleinstellung (int Wunschwinkel, int stepsProUmdrehung, int direction, int step){
+  if (Wunschwinkel<IstWinkel){
+    digitalWrite(direction, HIGH); //im Uhrzeigersinn
+    steps = (IstWinkel-Wunschwinkel) * (stepsProUmdrehung/360); //Umrechnung wie viele Steps gemacht werden
+  }
+  else {
+    digitalWrite(direction, LOW); // gegen den Uhrzeigersinn
+    steps = (Wunschwinkel - IstWinkel) * (stepsProUmdrehung/360); //Umrechnung wie viele Steps gemacht werden
+  }
+    for(int stepCounter = 0; stepCounter < steps; stepCounter++) {
+      digitalWrite(step,HIGH);
+      delayMicroseconds(500);
+      digitalWrite(step,LOW);
+      delayMicroseconds(500);
     }
 delay(1000);
 }

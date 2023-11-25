@@ -1,0 +1,7 @@
+// https://www.youtube.com/watch?v=mNw55WjbDns : Erklaervideo zum Ansteuern eines Relais
+
+void VentilBetaetigen (int relaisPin){
+    digitalWrite(relaisPin,HIGH);
+    delayMicroseconds(500); // Zeit in Microseconds, die das Ventil offen ist
+    digitalWrite(relaisPin,LOW);
+}
