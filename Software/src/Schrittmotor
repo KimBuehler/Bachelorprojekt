@@ -27,7 +27,7 @@ delay(1000);
 }
 
 /*
-Diese Funktion ueberprueft den Ist-Winkel mit dem Soll-Winkel
+Diese Funktion vergleicht den Ist-Winkel mit dem Soll-Winkel und gibt den Ist-Winkel zurueck.
 */
 int Winkelueberpruefung (){
   IstWinkel = analogRead(A0);

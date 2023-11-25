@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include <UltraschallSensor>
+#include <Ultraschall_Sensor>
 #include <Schrittmotor>
 #include <Ventil>
 
@@ -30,6 +30,7 @@ void setup() {
   pinMode(PIN_ENABLE, OUTPUT);
   pinMode(PIN_STEP,OUTPUT); 
   pinMode(PIN_DIRECTION, OUTPUT); 
+
   digitalWrite(PIN_ENABLE, LOW);
 
   //Einrichten Ventil-Pin
@@ -44,11 +45,8 @@ void loop() {
   Serial.println("Vorhandener Winkel: " + Winkel); 
 
   //VentilBetaetigen (PIN_RELAIS);
-  do{
-  bool Ball_erkannt = Ballerkennung(PIN_TRIGGER, PIN_ECHO);
-  //Serial.println(Ball_erkannt);
-  Geschwindigkeit = Geschwindigkeitsmessung(Ball_erkannt); // m/s
-  } while (Ball_erkannt==true);
-  Serial.println("Geschwindigkeit: " + Geschwindigkeit);
+
+  // Messung der Geschwindigkeit
+  Geschwindigkeitsmessung (PIN_TRIGGER, PIN_ECHO);
 }
 

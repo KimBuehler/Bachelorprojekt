@@ -4,12 +4,12 @@ const int SENSOR_MAX_RANGE = 30; // in cm
 unsigned long duration;
 unsigned int distance;
 bool Ball_erkannt = false;
+bool Ball_im_Sichtfeld = false;
 
 double start_time; // Zeit in Millisekunden
 double end_time; // Zeit in Millisekunden
-int Ball_Status = 1;
 unsigned long v;
-double s = 0.03; // Strecke des Sichtfeldes in m
+const double s = 0.03; // Strecke des Sichtfeldes in m
 // Berechnung von s: Durchmesser Ball + tan(Sichtwinkel/2)*Abstand orthogonal
 
 /*
@@ -38,35 +38,21 @@ return Ball_erkannt;
 }
 
 /*
-Diese Funktion misst die Zeit und berechnet dann auf Grundlage der Zeit und der Breite des Sichtfeldes die Geschwindigkeit des Gegenstandes.
+Diese Funktion misst die Geschwindigkeit des vorbei fliegenden Gegenstandes.
 */
-
-unsigned long Geschwindigkeitsmessung (bool Ball_erkannt)
+void Geschwindigkeitsmessung (int PIN_TRIGGER, int PIN_ECHO)
 {
-    switch(Ball_Status)
-    {
-        case 1:
-        // Ball nicht im Sichtfeld
-        //Serial.println("case1");
-        end_time = 0;
-        if (Ball_erkannt==true){
-            Ball_Status = 2;
-            start_time = millis();
-            v = 0;
+    do {
+        Ball_im_Sichtfeld = Ballerkennung( PIN_TRIGGER, PIN_ECHO);
+    } while (Ball_im_Sichtfeld==false);
 
-        }
-        break;
-
-        case 2:
-        //Ball im Sichtfeld
-        Serial.println("case2");
-        if (Ball_erkannt==false){
-            Ball_Status = 1;
-            end_time =  millis() - start_time;
-            v = s * (end_time / 100); // m/s
-
-        }
-        break;
-    }
-    return v;
+    start_time = millis();
+    v = 0;
+    
+    do {
+        Ball_im_Sichtfeld = Ballerkennung( PIN_TRIGGER, PIN_ECHO);
+    } while (Ball_im_Sichtfeld==true);
+    end_time =  millis() - start_time;
+    v = s * (end_time / 100); // m/s
+    Serial.println(v);
 }
