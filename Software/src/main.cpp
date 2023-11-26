@@ -49,15 +49,17 @@ void setup() {
 void loop() { 
   // Programm wird nur ausgefuehrt, wenn der Schluessel auf on gedreht wurde
   if (digitalRead(PIN_KEY)==HIGH){
-  Winkeleinstellung(Winkel, STEPS, PIN_DIRECTION, PIN_STEP);
-  Serial.println("Eingestellter Winkel: " + Winkel);
-  Winkel = Winkelueberpruefung();
-  Serial.println("Vorhandener Winkel: " + Winkel); 
-  if (digitalRead(PIN_BUTTON)== HIGH){
-  //VentilBetaetigen (PIN_RELAIS);
-  Serial.println("Ventil wird betaetigt");
+    Winkeleinstellung(Winkel, STEPS, PIN_DIRECTION, PIN_STEP);
+    Serial.println("Eingestellter Winkel: " + Winkel);
+    Winkel = Winkelueberpruefung();
+    Serial.println("Vorhandener Winkel: " + Winkel); 
+    if (digitalRead(PIN_BUTTON)== HIGH){
+      //VentilBetaetigen (PIN_RELAIS);
+      Serial.println("Ventil wird betaetigt");
 
-  // Messung der Geschwindigkeit
-  Geschwindigkeitsmessung (PIN_TRIGGER, PIN_ECHO);
-}}}
+      // Messung der Geschwindigkeit
+      Geschwindigkeitsmessung (PIN_TRIGGER, PIN_ECHO);
+    }
+  }
+}
 
