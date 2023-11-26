@@ -16,7 +16,11 @@ unsigned long Geschwindigkeit; // in m/s
 int Winkel = 30; // in °, Nullebene ist parallel zum Boden
 
 // Ventil
-#define PIN_RELAIS 8
+#define PIN_RELAIS 9
+
+// Schalter
+#define PIN_BUTTON 7
+#define PIN_KEY 8
 
 
 void setup() {
@@ -33,20 +37,27 @@ void setup() {
 
   digitalWrite(PIN_ENABLE, LOW);
 
-  //Einrichten Ventil-Pin
+  // Einrichten Ventil-Pin
   pinMode(PIN_RELAIS, OUTPUT);
+
+  // Einrichten der Schalter
+  pinMode(PIN_KEY, INPUT_PULLUP);
+  pinMode(PIN_BUTTON, INPUT_PULLUP);
 
 }
 
 void loop() { 
+  // Programm wird nur ausgefuehrt, wenn der Schluessel auf on gedreht wurde
+  if (digitalRead(PIN_KEY)==HIGH){
   Winkeleinstellung(Winkel, STEPS, PIN_DIRECTION, PIN_STEP);
   Serial.println("Eingestellter Winkel: " + Winkel);
   Winkel = Winkelueberpruefung();
   Serial.println("Vorhandener Winkel: " + Winkel); 
-
+  if (digitalRead(PIN_BUTTON)== HIGH){
   //VentilBetaetigen (PIN_RELAIS);
+  Serial.println("Ventil wird betaetigt");
 
   // Messung der Geschwindigkeit
   Geschwindigkeitsmessung (PIN_TRIGGER, PIN_ECHO);
-}
+}}}
 
