@@ -1,7 +1,6 @@
 #include <Arduino.h>
 #include <Ultraschall_Sensor>
 #include <Schrittmotor>
-#include <Ventil>
 
 // UltraschallSensor
 #define PIN_TRIGGER 12
@@ -53,13 +52,16 @@ void loop() {
     Serial.println("Eingestellter Winkel: " + Winkel);
     Winkel = Winkelueberpruefung();
     Serial.println("Vorhandener Winkel: " + Winkel); 
-    if (digitalRead(PIN_BUTTON)== HIGH){
-      //VentilBetaetigen (PIN_RELAIS);
-      Serial.println("Ventil wird betaetigt");
+  }
+  // Es wird nur abgeschossen, wenn der Schluessel auf on gedreht ist und der Knopf betaetigt wurde
+  if (digitalRead(PIN_BUTTON)== HIGH && digitalRead(PIN_KEY)==HIGH){
+    digitalWrite(PIN_RELAIS,HIGH); //VentilBetaetigen oeffnen
+    Serial.println("Ventil wird geoeffnet");
 
-      // Messung der Geschwindigkeit
-      Geschwindigkeitsmessung (PIN_TRIGGER, PIN_ECHO);
-    }
+    // Messung der Geschwindigkeit
+    Geschwindigkeitsmessung (PIN_TRIGGER, PIN_ECHO);
+
+    digitalWrite(PIN_RELAIS,LOW); //VentilBetaetigen schliessen
+    Serial.println("Ventil wird geschlossen");
   }
 }
-
