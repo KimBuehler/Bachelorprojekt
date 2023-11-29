@@ -2,17 +2,17 @@
 #include <InfrarotSensor>
 #include <Schrittmotor>
 
-// UltraschallSensor
+// InfrarotSensor
 #define PIN_TRIGGER 12
 #define PIN_ECHO    A0
-unsigned long Geschwindigkeit; // in m/s
+const double ballDurchmesser = 0.04; // Tischtennisball: 0.04; Tennisball: 0.067
+
 
 // Schrittmotor
-#define STEPS 2000 // Aus Datenblatt entnehmen, Schrittanzahl für 360°
+#define STEPS 200 // Aus Datenblatt entnehmen, Schrittanzahl für 360°
 #define PIN_ENABLE 6
 #define PIN_STEP 5
 #define PIN_DIRECTION 4
-int Winkel = 30; // in °, Nullebene ist parallel zum Boden
 
 // Ventil
 #define PIN_RELAIS 9
@@ -48,20 +48,18 @@ void setup() {
 void loop() { 
   // Programm wird nur ausgefuehrt, wenn der Schluessel auf on gedreht wurde
   if (digitalRead(PIN_KEY)==LOW){
-    Winkeleinstellung(Winkel, STEPS, PIN_DIRECTION, PIN_STEP);
-    //Serial.println("Eingestellter Winkel:");
-    Winkel = Winkelueberpruefung();
-    //Serial.println( Winkel); 
+    Winkeleinstellung(STEPS, PIN_DIRECTION, PIN_STEP);
   }
+
   // Es wird nur abgeschossen, wenn der Schluessel auf on gedreht ist und der Knopf betaetigt wurde
   if (digitalRead(PIN_BUTTON) == LOW && digitalRead(PIN_KEY) == LOW){
     //digitalWrite(PIN_RELAIS,HIGH); //VentilBetaetigen oeffnen
-    //Serial.println("Ventil wird geoeffnet");
+    Serial.println("Ventil wird geoeffnet");
 
     // Messung der Geschwindigkeit
-    Geschwindigkeitsmessung (PIN_TRIGGER, PIN_ECHO);
+    Geschwindigkeitsmessung (PIN_TRIGGER, PIN_ECHO, ballDurchmesser);
 
     //digitalWrite(PIN_RELAIS,LOW); //VentilBetaetigen schliessen
-    //Serial.println("Ventil wird geschlossen");
+    Serial.println("Ventil wird geschlossen");
   }
 }

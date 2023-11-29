@@ -1,39 +1,41 @@
 // https://starthardware.org/arduino-a4988-nema17/ : Informationen fuer die Steuerung des Schrittmotors
 // https://docs.arduino.cc/built-in-examples/basics/AnalogReadSerial : Dokumentation zum Auslesen eines Potentiometers
-int IstWinkel;
+int IstWinkel = 0;
 int EingestellterWinkel;
 int steps;
-
+int Wunschwinkel;
+const int steigung = 1;
+const int wertBei0Grad = 1000;
 
 /*
 Diese Funktion stellt den Abwurfwinkel ein. 
 */
-void Winkeleinstellung (int Wunschwinkel, int stepsProUmdrehung, int direction, int step){
+void Winkeleinstellung (int stepsProUmdrehung, int direction, int step){
+  Serial.println ("Bitte gebe den gewuenschten Winkel ein: ");
+  Wunschwinkel = (int) Serial.read();
   if (Wunschwinkel<IstWinkel){
     //Serial.println("Uhrzeigersinn");
     digitalWrite(direction, HIGH); //im Uhrzeigersinn
     steps = (IstWinkel-Wunschwinkel) * (stepsProUmdrehung/360); //Umrechnung wie viele Steps gemacht werden
   }
-  else {
+  else if (Wunschwinkel > IstWinkel){
     //Serial.println("gegen Uhrzeigersinn");
     digitalWrite(direction, LOW); // gegen den Uhrzeigersinn
-    //steps = 1000;
     steps = (Wunschwinkel - IstWinkel) * (stepsProUmdrehung/360); //Umrechnung wie viele Steps gemacht werden
+  } else {
+    steps = 0;
   }
     for(int stepCounter = 0; stepCounter < steps; stepCounter++) {
       digitalWrite(step,HIGH);
       delayMicroseconds(5000);
       digitalWrite(step,LOW);
       delayMicroseconds(5000);
-      //Serial.println(stepCounter);
+      
     }
 delay(1000);
-}
-
-/*
-Diese Funktion vergleicht den Ist-Winkel mit dem Soll-Winkel und gibt den Ist-Winkel zurueck.
-*/
-int Winkelueberpruefung (){
-  // IstWinkel = analogRead(A0);
-  return IstWinkel;
+IstWinkel = Wunschwinkel; //steigung * (analogRead(A1)- wertBei0Grad);
+Serial.print ("Es wurde folgender Winkel in Grad eingestellt: ");
+Serial.println (IstWinkel);
+Serial.print ("Es wurde folgender Poti-Wert ausgelesen: ");
+Serial.println (analogRead(A1));
 }
