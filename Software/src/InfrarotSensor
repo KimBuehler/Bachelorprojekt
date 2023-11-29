@@ -1,0 +1,15 @@
+bool wertGemessen = false;
+void Geschwindigkeitsmessung (int PIN_TRIGGER, int PIN_ECHO){
+    digitalWrite(PIN_TRIGGER, HIGH);
+    do{
+    if(analogRead(PIN_ECHO)<800){
+       Serial.println("Signal kommt an"); 
+       wertGemessen=false;
+    } else{
+        Serial.println("kein Signal");
+        wertGemessen=true;
+    }
+    } while(wertGemessen==false);
+    digitalWrite(PIN_TRIGGER,LOW);
+    Serial.println("Messung vorhanden");
+}

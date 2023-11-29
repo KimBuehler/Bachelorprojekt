@@ -1,0 +1,59 @@
+// https://elektro.turanis.de/html/prj121/index.html : Grundlage der Sensorimplementierung
+
+const int SENSOR_MAX_RANGE = 30; // in cm
+unsigned long duration;
+unsigned int distance;
+bool Ball_erkannt = false;
+bool Ball_im_Sichtfeld = false;
+
+double start_time; // Zeit in Millisekunden
+double end_time; // Zeit in Millisekunden
+unsigned long v;
+const double s = 0.03; // Strecke des Sichtfeldes in m
+// Berechnung von s: Durchmesser Ball + tan(Sichtwinkel/2)*Abstand orthogonal
+
+/*
+Diese Funktion ueberprueft, ob ein Gegenstand im Sichtfeld ist.
+*/
+bool Ballerkennung (int PIN_TRIGGER, int PIN_ECHO)
+{
+  digitalWrite(PIN_TRIGGER, LOW);
+  delayMicroseconds(2);
+
+  digitalWrite(PIN_TRIGGER, HIGH);
+  delayMicroseconds(10);
+
+  duration = pulseIn(PIN_ECHO, HIGH);
+  distance = duration/58; //Schallgeschwindigkeit des Puls 29µs für 1cm in Luft; Weg hin und zurück, bedeutet Wert auf 58µs verdoppeln
+
+  if (distance > SENSOR_MAX_RANGE|| distance <= 0){
+    //Serial.println("Kein Ball im Sichtfeld!");
+    Ball_erkannt = false;
+  } else {
+    //Serial.println("Ball befindet sich im Sichtfeld");
+    Ball_erkannt = true;
+  }
+
+return Ball_erkannt;
+}
+
+/*
+Diese Funktion misst die Geschwindigkeit des vorbei fliegenden Gegenstandes.
+*/
+void Geschwindigkeitsmessung (int PIN_TRIGGER, int PIN_ECHO)
+{
+    do {
+        Ball_im_Sichtfeld = Ballerkennung( PIN_TRIGGER, PIN_ECHO);
+    } while (Ball_im_Sichtfeld==false);
+
+    start_time = millis();
+    v = 0;
+    
+    do {
+        Ball_im_Sichtfeld = Ballerkennung( PIN_TRIGGER, PIN_ECHO);
+    } while (Ball_im_Sichtfeld==true);
+    end_time =  millis() - start_time;
+    v = s * (end_time / 100); // m/s
+    Serial.print("Geschwindigkeit");
+    Serial.println(v);
+}

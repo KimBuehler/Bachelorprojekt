@@ -1,21 +1,19 @@
 // https://elektro.turanis.de/html/prj121/index.html : Grundlage der Sensorimplementierung
 
-const int SENSOR_MAX_RANGE = 30; // in cm
-unsigned long duration;
+const int SENSOR_MAX_RANGE = 60; // in cm
+double duration;
 unsigned int distance;
-bool Ball_erkannt = false;
-bool Ball_im_Sichtfeld = false;
-
-double start_time; // Zeit in Millisekunden
-double end_time; // Zeit in Millisekunden
-unsigned long v;
-const double s = 0.03; // Strecke des Sichtfeldes in m
-// Berechnung von s: Durchmesser Ball + tan(Sichtwinkel/2)*Abstand orthogonal
+double entfernung1;
+double entfernung2;
+double v;
+double t;
+double t1;
+double t2;
 
 /*
-Diese Funktion ueberprueft, ob ein Gegenstand im Sichtfeld ist.
+Diese Funktion gibt die Entfernung eines Gegenstandes zurueck.
 */
-bool Ballerkennung (int PIN_TRIGGER, int PIN_ECHO)
+double Entfernungsmessung (int PIN_TRIGGER, int PIN_ECHO)
 {
   digitalWrite(PIN_TRIGGER, LOW);
   delayMicroseconds(2);
@@ -25,16 +23,12 @@ bool Ballerkennung (int PIN_TRIGGER, int PIN_ECHO)
 
   duration = pulseIn(PIN_ECHO, HIGH);
   distance = duration/58; //Schallgeschwindigkeit des Puls 29µs für 1cm in Luft; Weg hin und zurück, bedeutet Wert auf 58µs verdoppeln
-
-  if (distance > SENSOR_MAX_RANGE|| distance <= 0){
-    //Serial.println("Kein Ball im Sichtfeld!");
-    Ball_erkannt = false;
-  } else {
-    //Serial.println("Ball befindet sich im Sichtfeld");
-    Ball_erkannt = true;
-  }
-
-return Ball_erkannt;
+  //time = millis();
+  t = millis();
+    if (distance > SENSOR_MAX_RANGE|| distance <= 0){
+        distance = 0;
+    }
+return distance;
 }
 
 /*
@@ -42,17 +36,16 @@ Diese Funktion misst die Geschwindigkeit des vorbei fliegenden Gegenstandes.
 */
 void Geschwindigkeitsmessung (int PIN_TRIGGER, int PIN_ECHO)
 {
-    do {
-        Ball_im_Sichtfeld = Ballerkennung( PIN_TRIGGER, PIN_ECHO);
-    } while (Ball_im_Sichtfeld==false);
-
-    start_time = millis();
-    v = 0;
-    
-    do {
-        Ball_im_Sichtfeld = Ballerkennung( PIN_TRIGGER, PIN_ECHO);
-    } while (Ball_im_Sichtfeld==true);
-    end_time =  millis() - start_time;
-    v = s * (end_time / 100); // m/s
-    Serial.println(v);
+entfernung1 = Entfernungsmessung(PIN_TRIGGER, PIN_ECHO);
+t1 = t;
+//delay(20);
+entfernung2 = Entfernungsmessung(PIN_TRIGGER, PIN_ECHO);
+t2 = t;
+Serial.println(t1);
+Serial.println(t2);
+Serial.println(entfernung1);
+Serial.println(entfernung2);
+v = (entfernung2 - entfernung1) * (t2 - t1)/1000;
+Serial.print("Geschwindigkeit: ");
+Serial.println(v);
 }

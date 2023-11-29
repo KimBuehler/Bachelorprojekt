@@ -10,18 +10,22 @@ Diese Funktion stellt den Abwurfwinkel ein.
 */
 void Winkeleinstellung (int Wunschwinkel, int stepsProUmdrehung, int direction, int step){
   if (Wunschwinkel<IstWinkel){
+    //Serial.println("Uhrzeigersinn");
     digitalWrite(direction, HIGH); //im Uhrzeigersinn
     steps = (IstWinkel-Wunschwinkel) * (stepsProUmdrehung/360); //Umrechnung wie viele Steps gemacht werden
   }
   else {
+    //Serial.println("gegen Uhrzeigersinn");
     digitalWrite(direction, LOW); // gegen den Uhrzeigersinn
+    //steps = 1000;
     steps = (Wunschwinkel - IstWinkel) * (stepsProUmdrehung/360); //Umrechnung wie viele Steps gemacht werden
   }
     for(int stepCounter = 0; stepCounter < steps; stepCounter++) {
       digitalWrite(step,HIGH);
-      delayMicroseconds(500);
+      delayMicroseconds(5000);
       digitalWrite(step,LOW);
-      delayMicroseconds(500);
+      delayMicroseconds(5000);
+      //Serial.println(stepCounter);
     }
 delay(1000);
 }
@@ -30,6 +34,6 @@ delay(1000);
 Diese Funktion vergleicht den Ist-Winkel mit dem Soll-Winkel und gibt den Ist-Winkel zurueck.
 */
 int Winkelueberpruefung (){
-  IstWinkel = analogRead(A0);
+  // IstWinkel = analogRead(A0);
   return IstWinkel;
 }
