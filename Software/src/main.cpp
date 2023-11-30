@@ -20,12 +20,13 @@ const double ballDurchmesser = 0.036; // Tischtennisball: 0.04; Tennisball: 0.06
 // Schalter
 #define PIN_BUTTON 7
 #define PIN_KEY 8
+bool Schluessel_wurde_gerade_erst_on = true;
 
 
 void setup() {
   Serial.begin(9600);
 
-  // Einrichten Ultraschallsensor-Pins
+  // Einrichten Infrarot-Pins
   pinMode(PIN_TRIGGER, OUTPUT);
   pinMode(PIN_ECHO, INPUT);
   
@@ -46,12 +47,18 @@ void setup() {
 }
 
 void loop() { 
-  // Programm wird nur ausgefuehrt, wenn der Schluessel auf on gedreht wurde
-  if (digitalRead(PIN_KEY)==LOW){
+  if(digitalRead(PIN_KEY)==HIGH){
+    Schluessel_wurde_gerade_erst_on = true;
+  }
+  // Programm wird nur ausgefuehrt, wenn der Schluessel gerade erst auf on gedreht wurde
+  if (digitalRead(PIN_KEY)==LOW && Schluessel_wurde_gerade_erst_on == true){
+    Schluessel_wurde_gerade_erst_on = false;
+    //Einstellung des gewuenschten Abschusswinkels
     Winkeleinstellung(STEPS, PIN_DIRECTION, PIN_STEP);
   }
 
   // Es wird nur abgeschossen, wenn der Schluessel auf on gedreht ist und der Knopf betaetigt wurde
+
   if (digitalRead(PIN_BUTTON) == LOW && digitalRead(PIN_KEY) == LOW){
     //digitalWrite(PIN_RELAIS,HIGH); //VentilBetaetigen oeffnen
     Serial.println("Ventil wird geoeffnet");
