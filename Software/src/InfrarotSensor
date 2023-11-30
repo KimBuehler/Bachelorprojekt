@@ -3,6 +3,9 @@ double t2;
 double t;
 double v;
 
+/*
+Diese Funktion berechnet die Geschwindigkeit eines Objektes, welches sich durch die Schranke bewegt. Eingestellt werden muss hierbei die Gegenstandsbreite, welcher sich durch den Sensor bewegt.
+*/
 void Geschwindigkeitsmessung (int PIN_TRIGGER, int PIN_ECHO, const double s){
 
     digitalWrite(PIN_TRIGGER, HIGH);

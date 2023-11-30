@@ -4,14 +4,15 @@ int IstWinkel = 0;
 int EingestellterWinkel;
 int steps;
 int Wunschwinkel;
-const int steigung = 1;
-const int wertBei0Grad = 1000;
+const int steigung = 1; // Durch Versuch und anschließender linearer Regression ermittelt
+const int wertBei0Grad = 1000; // Beliebig gewaehlter Wert, bei Montage, aendert sich bei Umbau
 
 /*
-Diese Funktion stellt den Abwurfwinkel ein. 
+Diese Funktion stellt den Abwurfwinkel ein und ueberprueft, welcher Winkel tatsaechlich eingestellt wurde. 
 */
 void Winkeleinstellung (int stepsProUmdrehung, int direction, int step){
   Serial.println ("Bitte gebe den gewuenschten Winkel ein: ");
+  delay(5000);
   Wunschwinkel = (int) Serial.read();
   if (Wunschwinkel<IstWinkel){
     //Serial.println("Uhrzeigersinn");
