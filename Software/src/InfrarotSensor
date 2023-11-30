@@ -4,17 +4,23 @@ double t;
 double v;
 
 void Geschwindigkeitsmessung (int PIN_TRIGGER, int PIN_ECHO, const double s){
+
     digitalWrite(PIN_TRIGGER, HIGH);
     do {
+        Serial.println(analogRead(PIN_ECHO));
         t1 = millis();
-    } while (analogRead(PIN_ECHO) < 800);
+    } while (analogRead(PIN_ECHO) < 1000);
+    delay(0.5);
     do {
+        Serial.println(analogRead(PIN_ECHO));
         t2 = millis();
-    }while (analogRead(PIN_ECHO)>800);
+    }while (analogRead(PIN_ECHO)>1000);
     digitalWrite(PIN_TRIGGER,LOW);
     Serial.println("Messung vorhanden");
+    Serial.println(t1);
+    Serial.println(t2);
     t = t2 - t1;
-    v = s * t / 1000;
+    v = s* 1000 / t ;
     Serial.print ("Die Geschwindigkeit betraegt: ");
     Serial.print (v);
     Serial.println (" m/s");

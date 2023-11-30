@@ -5,7 +5,7 @@
 // InfrarotSensor
 #define PIN_TRIGGER 12
 #define PIN_ECHO    A0
-const double ballDurchmesser = 0.04; // Tischtennisball: 0.04; Tennisball: 0.067
+const double ballDurchmesser = 0.036; // Tischtennisball: 0.04; Tennisball: 0.067
 
 
 // Schrittmotor
