@@ -59,7 +59,7 @@ void loop() {
 
   // Es wird nur abgeschossen, wenn der Schluessel auf on gedreht ist und der Knopf betaetigt wurde
 
-  if (digitalRead(PIN_BUTTON) == LOW && digitalRead(PIN_KEY) == LOW){
+  if (digitalRead(PIN_BUTTON) == HIGH && digitalRead(PIN_KEY) == LOW){
     //digitalWrite(PIN_RELAIS,HIGH); //VentilBetaetigen oeffnen
     Serial.println("Ventil wird geoeffnet");
 

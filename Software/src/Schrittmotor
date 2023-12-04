@@ -13,16 +13,16 @@ Diese Funktion stellt den Abwurfwinkel ein und ueberprueft, welcher Winkel tatsa
 void Winkeleinstellung (int stepsProUmdrehung, int direction, int step){
   Serial.println ("Bitte gebe den gewuenschten Winkel ein: ");
   delay(5000);
-  Wunschwinkel = (int) Serial.read();
+  Wunschwinkel = 180; //(int) Serial.read();
   if (Wunschwinkel<IstWinkel){
-    //Serial.println("Uhrzeigersinn");
+    Serial.println("Uhrzeigersinn");
     digitalWrite(direction, HIGH); //im Uhrzeigersinn
-    steps = (IstWinkel-Wunschwinkel) * (stepsProUmdrehung/360); //Umrechnung wie viele Steps gemacht werden
+    steps = (int)(IstWinkel-Wunschwinkel) * (stepsProUmdrehung/360); //Umrechnung wie viele Steps gemacht werden
   }
   else if (Wunschwinkel > IstWinkel){
-    //Serial.println("gegen Uhrzeigersinn");
+    Serial.println("gegen Uhrzeigersinn");
     digitalWrite(direction, LOW); // gegen den Uhrzeigersinn
-    steps = (Wunschwinkel - IstWinkel) * (stepsProUmdrehung/360); //Umrechnung wie viele Steps gemacht werden
+    steps = (int) (Wunschwinkel - IstWinkel) * (stepsProUmdrehung/360); //Umrechnung wie viele Steps gemacht werden
   } else {
     steps = 0;
   }
