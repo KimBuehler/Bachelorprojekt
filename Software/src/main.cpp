@@ -5,7 +5,7 @@
 // InfrarotSensor
 #define PIN_TRIGGER 12
 #define PIN_ECHO    A0
-const double ballDurchmesser = 0.036; // Tischtennisball: 0.04; Tennisball: 0.067
+const double ballDurchmesser = 0.052; // Tischtennisball: 0.04; Tennisball: 0.067
 
 
 // Schrittmotor
@@ -39,6 +39,7 @@ void setup() {
 
   // Einrichten Ventil-Pin
   pinMode(PIN_RELAIS, OUTPUT);
+  digitalWrite(PIN_RELAIS,HIGH);
 
   // Einrichten der Schalter
   pinMode(PIN_KEY, INPUT_PULLUP);
@@ -49,24 +50,26 @@ void setup() {
 void loop() { 
   if(digitalRead(PIN_KEY)==HIGH){
     Schluessel_wurde_gerade_erst_on = true;
+    digitalWrite(PIN_TRIGGER, LOW);
   }
   // Programm wird nur ausgefuehrt, wenn der Schluessel gerade erst auf on gedreht wurde
   if (digitalRead(PIN_KEY)==LOW && Schluessel_wurde_gerade_erst_on == true){
     Schluessel_wurde_gerade_erst_on = false;
+    digitalWrite(PIN_TRIGGER, HIGH);
     //Einstellung des gewuenschten Abschusswinkels
     Winkeleinstellung(STEPS, PIN_DIRECTION, PIN_STEP);
   }
 
   // Es wird nur abgeschossen, wenn der Schluessel auf on gedreht ist und der Knopf betaetigt wurde
 
-  if (digitalRead(PIN_BUTTON) == HIGH && digitalRead(PIN_KEY) == LOW){
-    //digitalWrite(PIN_RELAIS,HIGH); //VentilBetaetigen oeffnen
+  if (digitalRead(PIN_BUTTON) == LOW && digitalRead(PIN_KEY) == LOW){
+    digitalWrite(PIN_RELAIS,LOW); //VentilBetaetigen oeffnen
     Serial.println("Ventil wird geoeffnet");
 
     // Messung der Geschwindigkeit
-    Geschwindigkeitsmessung (PIN_TRIGGER, PIN_ECHO, ballDurchmesser);
+    Geschwindigkeitsmessung ( PIN_ECHO, ballDurchmesser);
 
-    //digitalWrite(PIN_RELAIS,LOW); //VentilBetaetigen schliessen
+    digitalWrite(PIN_RELAIS,HIGH); //VentilBetaetigen schliessen
     Serial.println("Ventil wird geschlossen");
   }
 }
