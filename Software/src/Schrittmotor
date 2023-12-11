@@ -1,11 +1,10 @@
 // https://starthardware.org/arduino-a4988-nema17/ : Informationen fuer die Steuerung des Schrittmotors
 // https://docs.arduino.cc/built-in-examples/basics/AnalogReadSerial : Dokumentation zum Auslesen eines Potentiometers
-int IstWinkel = 0;
-int EingestellterWinkel;
+double IstWinkel = 175;
 int steps;
 int Wunschwinkel;
-const int steigung = 1; // Durch Versuch und anschließender linearer Regression ermittelt
-const int wertBei0Grad = 1000; // Beliebig gewaehlter Wert, bei Montage, aendert sich bei Umbau
+const double steigung = 2.84; // Durch Versuch und anschließender linearer Regression ermittelt
+const double wertBei0Grad = 255.75; // Beliebig gewaehlter Wert, bei Montage, aendert sich bei Umbau
 
 /*
 Diese Funktion stellt den Abwurfwinkel ein und ueberprueft, welcher Winkel tatsaechlich eingestellt wurde. 
@@ -13,16 +12,14 @@ Diese Funktion stellt den Abwurfwinkel ein und ueberprueft, welcher Winkel tatsa
 void Winkeleinstellung (int stepsProUmdrehung, int direction, int step){
   Serial.println ("Bitte gebe den gewuenschten Winkel ein: ");
   delay(5000);
-  Wunschwinkel = 180; //(int) Serial.read();
+  Wunschwinkel = 0; //(int) Serial.read();
   if (Wunschwinkel<IstWinkel){
-    Serial.println("Uhrzeigersinn");
     digitalWrite(direction, HIGH); //im Uhrzeigersinn
-    steps = (int)(IstWinkel-Wunschwinkel) * (stepsProUmdrehung/360); //Umrechnung wie viele Steps gemacht werden
+    steps = round(((IstWinkel-Wunschwinkel) * stepsProUmdrehung)/360); //Umrechnung wie viele Steps gemacht werden
   }
   else if (Wunschwinkel > IstWinkel){
-    Serial.println("gegen Uhrzeigersinn");
     digitalWrite(direction, LOW); // gegen den Uhrzeigersinn
-    steps = (int) (Wunschwinkel - IstWinkel) * (stepsProUmdrehung/360); //Umrechnung wie viele Steps gemacht werden
+    steps = round(((Wunschwinkel - IstWinkel)* stepsProUmdrehung) /360); //Umrechnung wie viele Steps gemacht werden
   } else {
     steps = 0;
   }
@@ -34,9 +31,11 @@ void Winkeleinstellung (int stepsProUmdrehung, int direction, int step){
       
     }
 delay(1000);
-IstWinkel = Wunschwinkel; //steigung * (analogRead(A1)- wertBei0Grad);
+Serial.println (analogRead(A1));
+IstWinkel = (analogRead(A1) - wertBei0Grad)/steigung ;
 Serial.print ("Es wurde folgender Winkel in Grad eingestellt: ");
 Serial.println (IstWinkel);
 Serial.print ("Es wurde folgender Poti-Wert ausgelesen: ");
+Serial.println (wertBei0Grad);
 Serial.println (analogRead(A1));
 }
