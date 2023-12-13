@@ -7,37 +7,42 @@ double wert;
 
 /*
 Diese Funktion berechnet die Geschwindigkeit eines Objektes, welches sich durch die Schranke bewegt. Eingestellt werden muss hierbei die Gegenstandsbreite, welcher sich durch den Sensor bewegt.
+Es gibt ein zeitliches Abbruchkriterium, um eine Dauerbestromung des Ventils zu verhindern.
 */
-void Geschwindigkeitsmessung (int PIN_ECHO, const double s){
+void Geschwindigkeitsmessung (int PIN_SIGNAL, const double s){
     t0 = micros();
     do {
         t1 = micros();
-        wert = analogRead(PIN_ECHO);
+        wert = analogRead(PIN_SIGNAL);
+
         if (wert >= 950){
             break;
-        } else if ((t1-t0)>1e6){
+        } 
+        else if ((t1-t0)>(2* 1e6)){
             t1 = 0;
             break;
         }
-        
     } while (true);
-    
+
+    delay(2);
+
     do {
+        t2 = micros();
+        wert = analogRead(PIN_SIGNAL);
+
         if (t1==0){
             t2 = 0;
             break;
-        }
-        t2 = micros();
-        wert = analogRead(PIN_ECHO);
-        if (wert < 950){
+        }        
+        else if (wert < 950){
             break;
         }
     }while (true);
     
-    Serial.println("Messung vorhanden");
+    Serial1.println("Messung vorhanden");
     t = t2 - t1;
     v = s* 1e6 / t ;
-    Serial.print ("Die Geschwindigkeit betraegt: ");
-    Serial.print (v);
-    Serial.println (" m/s");
+    Serial1.print ("Die Geschwindigkeit betraegt: ");
+    Serial1.print (v);
+    Serial1.println (" m/s");
 }

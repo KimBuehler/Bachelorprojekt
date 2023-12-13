@@ -2,7 +2,8 @@
 // https://docs.arduino.cc/built-in-examples/basics/AnalogReadSerial : Dokumentation zum Auslesen eines Potentiometers
 double IstWinkel = 175;
 int steps;
-int Wunschwinkel;
+String Wunschwinkel;
+int wunschwinkel;
 const double steigung = 2.84; // Durch Versuch und anschließender linearer Regression ermittelt
 const double wertBei0Grad = 255.75; // Beliebig gewaehlter Wert, bei Montage, aendert sich bei Umbau
 
@@ -12,14 +13,18 @@ Diese Funktion stellt den Abwurfwinkel ein und ueberprueft, welcher Winkel tatsa
 void Winkeleinstellung (int stepsProUmdrehung, int direction, int step){
   Serial.println ("Bitte gebe den gewuenschten Winkel ein: ");
   delay(5000);
-  Wunschwinkel = 0; //(int) Serial.read();
-  if (Wunschwinkel<IstWinkel){
+  Wunschwinkel = Serial1.read();
+  wunschwinkel = Wunschwinkel.toInt();
+  Serial.println(Wunschwinkel);
+  Serial.println(wunschwinkel);
+  
+  if (wunschwinkel<IstWinkel){
     digitalWrite(direction, HIGH); //im Uhrzeigersinn
-    steps = round(((IstWinkel-Wunschwinkel) * stepsProUmdrehung)/360); //Umrechnung wie viele Steps gemacht werden
+    steps = round(((IstWinkel-wunschwinkel) * stepsProUmdrehung)/360); //Umrechnung wie viele Steps gemacht werden
   }
-  else if (Wunschwinkel > IstWinkel){
+  else if (wunschwinkel > IstWinkel){
     digitalWrite(direction, LOW); // gegen den Uhrzeigersinn
-    steps = round(((Wunschwinkel - IstWinkel)* stepsProUmdrehung) /360); //Umrechnung wie viele Steps gemacht werden
+    steps = round(((wunschwinkel - IstWinkel)* stepsProUmdrehung) /360); //Umrechnung wie viele Steps gemacht werden
   } else {
     steps = 0;
   }
@@ -31,11 +36,9 @@ void Winkeleinstellung (int stepsProUmdrehung, int direction, int step){
       
     }
 delay(1000);
-Serial.println (analogRead(A1));
 IstWinkel = (analogRead(A1) - wertBei0Grad)/steigung ;
 Serial.print ("Es wurde folgender Winkel in Grad eingestellt: ");
 Serial.println (IstWinkel);
 Serial.print ("Es wurde folgender Poti-Wert ausgelesen: ");
 Serial.println (wertBei0Grad);
-Serial.println (analogRead(A1));
 }
