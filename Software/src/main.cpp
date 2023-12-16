@@ -4,7 +4,7 @@
 
 // InfrarotSensor
 #define PIN_TRIGGER 12
-#define PIN_SIGNAL    A0
+#define PIN_SIGNAL  13
 const double ballDurchmesser = 0.052; // Tischtennisball: 0.04; Tennisball: 0.067
 
 
@@ -25,6 +25,7 @@ const double ballDurchmesser = 0.052; // Tischtennisball: 0.04; Tennisball: 0.06
 #define PIN_BUTTON 7
 #define PIN_KEY 8
 bool Schluessel_wurde_gerade_erst_on = false;
+int Knopf_per_bluetooth = 0;
 
 
 void setup() {
@@ -63,7 +64,8 @@ void loop() {
   }
   // Programm wird nur ausgefuehrt, wenn der Schluessel gerade erst auf on gedreht wurde
   // keine Funktion, sollte der Schluessel beim Einschalten schon auf on gedreht sein
-  if (digitalRead(PIN_KEY)==LOW && Schluessel_wurde_gerade_erst_on == true){
+  
+  if (digitalRead(PIN_KEY)==LOW && Schluessel_wurde_gerade_erst_on == true ){
     Schluessel_wurde_gerade_erst_on = false;
 
     digitalWrite(PIN_TRIGGER, HIGH); // Einschalten des Infrarot-Senders
@@ -74,8 +76,8 @@ void loop() {
   }
 
   // Es wird nur abgeschossen, wenn der Schluessel auf on gedreht ist und der Knopf betaetigt wurde
-
-  if (digitalRead(PIN_BUTTON) == LOW && digitalRead(PIN_KEY) == LOW){
+  Knopf_per_bluetooth = bluetooth("Knopf");
+  if (digitalRead(PIN_BUTTON) == LOW && (digitalRead(PIN_KEY) == LOW || Knopf_per_bluetooth== 1)){
     digitalWrite(PIN_RELAIS_Ventil,LOW); //Ventil betaetigen, oeffnen
 
     // Messung der Geschwindigkeit

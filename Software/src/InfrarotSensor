@@ -13,9 +13,9 @@ void Geschwindigkeitsmessung (int PIN_SIGNAL, const double s){
     t0 = micros();
     do {
         t1 = micros();
-        wert = analogRead(PIN_SIGNAL);
+        wert = digitalRead(PIN_SIGNAL);
 
-        if (wert >= 950){
+        if (wert == 1){
             break;
         } 
         else if ((t1-t0)>(2* 1e6)){
@@ -28,13 +28,13 @@ void Geschwindigkeitsmessung (int PIN_SIGNAL, const double s){
 
     do {
         t2 = micros();
-        wert = analogRead(PIN_SIGNAL);
+        wert = digitalRead(PIN_SIGNAL);
 
         if (t1==0){
             t2 = 0;
             break;
         }        
-        else if (wert < 950){
+        else if (wert == 0){
             break;
         }
     }while (true);

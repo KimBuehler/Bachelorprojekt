@@ -1,0 +1,30 @@
+int EmpfangeneDaten[4] ={0,0,0,0};
+int winkel;
+int bluetooth (String nachfrage){
+    if (nachfrage == "Winkel"){
+        Serial.println("Bitte geben Sie ihren Wunschwinkel ein.")
+    }
+    while (stelle<3){
+    if(Serial.available()) {
+    EmpfangeneDaten[stelle] = (Serial.read());
+    Serial.print(stelle);
+    Serial.print(": ");
+    Serial.println(EmpfangeneDaten[stelle]);
+    stelle++;
+  }
+  }
+  stelle = 0;
+if (nachfrage == "Winkel"){
+    winkel = (EmpfangeneDaten[0]-48) * 10 +(EmpfangeneDaten[1]-48);
+    return winkel;
+}
+if (nachfrage == "Knopf"){
+    
+}
+  if (EmpfangeneDaten[0] == 49){
+    digitalWrite(13, HIGH);
+  }
+  if (EmpfangeneDaten[0] == 48){
+    digitalWrite(13, LOW);
+  }
+}

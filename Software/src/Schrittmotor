@@ -1,5 +1,6 @@
 // https://starthardware.org/arduino-a4988-nema17/ : Informationen fuer die Steuerung des Schrittmotors
 // https://docs.arduino.cc/built-in-examples/basics/AnalogReadSerial : Dokumentation zum Auslesen eines Potentiometers
+#include <BluetoothSchnittstelle>
 double IstWinkel = 175;
 int steps;
 String Wunschwinkel;
@@ -13,7 +14,7 @@ Diese Funktion stellt den Abwurfwinkel ein und ueberprueft, welcher Winkel tatsa
 void Winkeleinstellung (int stepsProUmdrehung, int direction, int step){
   Serial.println ("Bitte gebe den gewuenschten Winkel ein: ");
   delay(5000);
-  Wunschwinkel = Serial1.read();
+  Wunschwinkel = bluetooth("Winkel");
   wunschwinkel = Wunschwinkel.toInt();
   Serial.println(Wunschwinkel);
   Serial.println(wunschwinkel);
