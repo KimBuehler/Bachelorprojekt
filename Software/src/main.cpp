@@ -3,29 +3,29 @@
 #include <Schrittmotor>
 
 // InfrarotSensor
-#define PIN_TRIGGER 12
-#define PIN_SIGNAL  13
+#define PIN_TRIGGER 12 // ein-/ausschalten des Infrarot-Sensors
+#define PIN_SIGNAL  13 // Input des Infrarot-Sensor-Signals (digital)
 const double ballDurchmesser = 0.052; // Tischtennisball: 0.04; Tennisball: 0.067
 
 
 // Schrittmotor
 #define STEPS 200 // Aus Datenblatt entnehmen, Schrittanzahl für 360°
-#define PIN_ENABLE 6
-#define PIN_STEP 5
-#define PIN_DIRECTION 4
-#define PIN_M1 9
-#define PIN_M2 10
-#define PIN_M3 11
+#define PIN_ENABLE 6 
+#define PIN_STEP 5 // ANzahl der zu verfahrenden Schritte
+#define PIN_DIRECTION 4 // Einstellung der Drehrichtung (1 = Uhrzeigersinn, 0 = gegen Uhrzeigersinn)
+#define PIN_M1 9 // mögliche Einstellung der Schrittweite
+#define PIN_M2 10 // mögliche Einstellung der Schrittweite
+#define PIN_M3 11 // mögliche Einstellung der Schrittweite
 
-// Ventil
-#define PIN_RELAIS_Ventil 2
-#define PIN_RELAIS_LAMPE 3 
+// Relais
+#define PIN_RELAIS_Ventil 2 // Ansteuerung des Ventils ueber ein Relais
+#define PIN_RELAIS_LAMPE 3 // Ansteuerung der Lampe im Knopf ueber ein Relais
 
 // Schalter
-#define PIN_BUTTON 7
-#define PIN_KEY 8
-bool Schluessel_wurde_gerade_erst_on = false;
-int Knopf_per_bluetooth = 0;
+#define PIN_BUTTON 7 // Input, ob Knopf betaetigt
+#define PIN_KEY 8 // Input, ueber Schluesselposition
+bool Schluessel_wurde_gerade_erst_on = false; // gibt an, ob eine Winkeleinstellung folgt oder nicht
+int Knopf_per_bluetooth = 0; // 0 = nicht betaetigt, 1 = betaetigt
 
 
 void setup() {
@@ -57,15 +57,18 @@ void setup() {
 }
 
 void loop() { 
+
   if(digitalRead(PIN_KEY)==HIGH){
-    Schluessel_wurde_gerade_erst_on = true;
+    
+    Schluessel_wurde_gerade_erst_on = true; // Zuruecksetzen, sodass bei Einschalten wieder Winkelabfrage kommt
     digitalWrite(PIN_RELAIS_LAMPE,HIGH); // Abschalten der Lampe
     digitalWrite(PIN_TRIGGER, LOW); // Abschalten des Infrarotsensors
   }
+
   // Programm wird nur ausgefuehrt, wenn der Schluessel gerade erst auf on gedreht wurde
   // keine Funktion, sollte der Schluessel beim Einschalten schon auf on gedreht sein
-  
   if (digitalRead(PIN_KEY)==LOW && Schluessel_wurde_gerade_erst_on == true ){
+    
     Schluessel_wurde_gerade_erst_on = false;
 
     digitalWrite(PIN_TRIGGER, HIGH); // Einschalten des Infrarot-Senders
@@ -76,13 +79,18 @@ void loop() {
   }
 
   // Es wird nur abgeschossen, wenn der Schluessel auf on gedreht ist und der Knopf betaetigt wurde
+  if(digitalRead(PIN_KEY) == LOW){
+  // Abfrage, ob per Bluetooth Signal fuer Abschuss kommt    
   Knopf_per_bluetooth = bluetooth("Knopf");
-  if (digitalRead(PIN_BUTTON) == LOW && (digitalRead(PIN_KEY) == LOW || Knopf_per_bluetooth== 1)){
-    digitalWrite(PIN_RELAIS_Ventil,LOW); //Ventil betaetigen, oeffnen
 
-    // Messung der Geschwindigkeit
-    Geschwindigkeitsmessung ( PIN_SIGNAL, ballDurchmesser);
+    if (digitalRead(PIN_BUTTON) == LOW || Knopf_per_bluetooth== 1){
+      
+      digitalWrite(PIN_RELAIS_Ventil,LOW); //Ventil betaetigen, oeffnen
 
-    digitalWrite(PIN_RELAIS_Ventil,HIGH); //Ventil betaetigen, schliessen
+      // Messung der Geschwindigkeit
+      Geschwindigkeitsmessung ( PIN_SIGNAL, ballDurchmesser);
+
+      digitalWrite(PIN_RELAIS_Ventil,HIGH); //Ventil betaetigen, schliessen
+    }
   }
 }

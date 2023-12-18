@@ -1,48 +1,49 @@
-double t0;
-double t1;
-double t2;
-double t;
-double v;
-double wert;
+double t0; // Zeitpunkt zu der die Abfrage startet
+double t1; // Zeitpunkt zu der der Ball das erste mal die Schranke unterbricht
+double t2; // Zeitpunkt zu der der Ball das erste mal nicht mehr innerhalb der Scharke ist
+double t; // Zeitdifferenz zwischen t1 und t2
+double v; // berechnete Geschwindigkeit des Gegenstandes 
+double wert; // Messwert der Infrarot-Schranke
 
 /*
 Diese Funktion berechnet die Geschwindigkeit eines Objektes, welches sich durch die Schranke bewegt. Eingestellt werden muss hierbei die Gegenstandsbreite, welcher sich durch den Sensor bewegt.
 Es gibt ein zeitliches Abbruchkriterium, um eine Dauerbestromung des Ventils zu verhindern.
 */
 void Geschwindigkeitsmessung (int PIN_SIGNAL, const double s){
-    t0 = micros();
+    t0 = micros(); // Erfassen der aktuellen Systemzeit
     do {
-        t1 = micros();
-        wert = digitalRead(PIN_SIGNAL);
+        t1 = micros(); // Erfassen der aktuellen Systemzeit
+        wert = digitalRead(PIN_SIGNAL); // Erfassen des aktuellen Wertes der Schranke (Signal kommt an/nicht an) 
 
         if (wert == 1){
-            break;
+            break; // Verlassen der Schleife, wenn Signal unterbrochen
         } 
         else if ((t1-t0)>(2* 1e6)){
             t1 = 0;
-            break;
+            break; // Verlassen der Schleife, wenn Zeitueberschreitung
         }
     } while (true);
 
     delay(2);
 
     do {
-        t2 = micros();
-        wert = digitalRead(PIN_SIGNAL);
+        t2 = micros(); // Erfassen der aktuellen Systemzeit
+        wert = digitalRead(PIN_SIGNAL); // Erfassen des aktuellen Wertes der Schranke (Signal kommt an/nicht an) 
 
         if (t1==0){
             t2 = 0;
-            break;
+            break; // Verlassen der Schleife, wenn Zeitueberschreitung
         }        
         else if (wert == 0){
-            break;
+            break; // Verlassen der Schleife, wenn Signal wieder ankommt
         }
     }while (true);
     
-    Serial1.println("Messung vorhanden");
-    t = t2 - t1;
-    v = s* 1e6 / t ;
-    Serial1.print ("Die Geschwindigkeit betraegt: ");
-    Serial1.print (v);
-    Serial1.println (" m/s");
+    t = t2 - t1; // Berechnung der Zeitdifferenz
+    v = s* 1e6 / t ; // Berechnung der Geschwindigkeit
+
+    // Formatierte Ausgabe der Geschwindigkeit auf den Seriellen Terminal:
+    Serial.print ("Die Geschwindigkeit betraegt: ");
+    Serial.print (v);
+    Serial.println (" m/s");
 }
