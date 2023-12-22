@@ -14,7 +14,6 @@ void Geschwindigkeitsmessung (int PIN_SIGNAL, const double s){
     do {
         t1 = micros(); // Erfassen der aktuellen Systemzeit
         wert = analogRead(PIN_SIGNAL); // Erfassen des aktuellen Wertes der Schranke (Signal kommt an/nicht an) 
-        Serial.println("Warten auf Abschuss");
         if (wert > 950){
             break; // Verlassen der Schleife, wenn Signal unterbrochen
         } 
@@ -29,7 +28,6 @@ void Geschwindigkeitsmessung (int PIN_SIGNAL, const double s){
     do {
         t2 = micros(); // Erfassen der aktuellen Systemzeit
         wert = analogRead(PIN_SIGNAL); // Erfassen des aktuellen Wertes der Schranke (Signal kommt an/nicht an) 
-        Serial.println(wert);
         if (t1==0 || (t2-t0)>(2* 1e6)){
             t2 = 0;
             break; // Verlassen der Schleife, wenn Zeitueberschreitung
@@ -37,13 +35,18 @@ void Geschwindigkeitsmessung (int PIN_SIGNAL, const double s){
         else if (wert < 950){
             break; // Verlassen der Schleife, wenn Signal wieder ankommt
         }
-    }while (true);
+    } while (true);
     
     t = t2 - t1; // Berechnung der Zeitdifferenz
     v = s* 1e6 / t ; // Berechnung der Geschwindigkeit
 
     // Formatierte Ausgabe der Geschwindigkeit auf den Seriellen Terminal:
-    Serial.print ("Die Geschwindigkeit betraegt: ");
-    Serial.print (v);
-    Serial.println (" m/s");
+    if (t == 0){
+        Serial.println ("Fehlerhafte Messung. ");
+    }
+    else {
+        Serial.print ("Die Geschwindigkeit betraegt: ");
+        Serial.print (v);
+        Serial.println (" m/s");
+    }
 }

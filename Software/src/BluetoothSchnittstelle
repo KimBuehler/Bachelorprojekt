@@ -1,19 +1,19 @@
-int EmpfangeneDaten[4] ={0,0,0,0}; // die Anzahl der EIntraege kann beliebig abgeaendert werden
+int EmpfangeneDaten[4] ={0,0,0,0}; // die Anzahl der Eintraege kann beliebig abgeaendert werden
 int winkel;
 int stelle =0;
 bool warten = false; 
 int rueckgabe;
 
 /*
-Diese Funktion bildet die Bluetooth-Schnittstelle ab, es koennen beliebig viele (max. 5) ASCII-Zeichen uebermittelt werden. Je nachdem mit welchem Schluesselwort wird das Ausgelesene anders interpretiert.
+Diese Funktion bildet die Bluetooth-Schnittstelle ab, es koennen beliebig viele (max. 4) ASCII-Zeichen uebermittelt werden. Je nachdem mit welchem Schluesselwort wird das Ausgelesene anders interpretiert.
 */
 int bluetooth (String nachfrage){
     if (nachfrage == "Winkel"){
-        Serial.println("Bitte geben Sie ihren Wunschwinkel ein.");
+        Serial.println("Bitte geben Sie ihren Wunschwinkel ein. Er muss sich zwischen 20° und 60° befinden.");
         while (!Serial.available());
     }
     if (nachfrage== "Knopf" && warten == false){
-        Serial.println("Schreiben Sie eine 1 ,wenn Sie einen Schuss abfeuern wollen. Sonst schreiben Sie bitte eine 0 oder warten Sie. ");
+        Serial.println("Der Teststand ist nun bereit fuer einen Abwurf, schreiben Sie eine 1, wenn sie ausloesen wollen. ");
         warten = true;
     }
     
@@ -25,32 +25,50 @@ int bluetooth (String nachfrage){
         if (EmpfangeneDaten[stelle]!=13 && EmpfangeneDaten[stelle]!=10){
             if (EmpfangeneDaten[stelle]<48 || EmpfangeneDaten[stelle]>57){
                 Serial.println("Fehlerhafte Eingabe.");
-                rueckgabe =-1;
+                rueckgabe = -1;
             }
         }
         stelle++;
         delay(5);
     }
-if (nachfrage == "Winkel"){
-    delay (1000);
-    EmpfangeneDaten[0]= EmpfangeneDaten[0] - 48;
-    EmpfangeneDaten[1]= EmpfangeneDaten[1] - 48;
-    winkel = ((10 * EmpfangeneDaten[0]) + EmpfangeneDaten[1]);
-    warten = false; 
-    rueckgabe = winkel;  
-    
-}
-if (nachfrage == "Knopf"){
-    
-    if (EmpfangeneDaten[0]  ==49){
-        warten = false;
-        rueckgabe = 1;
+
+        
+    if (nachfrage == "Winkel"){
+        
+        // Ueberpruefung, ob EmpfangeneDaten vollstaendig ist
+        if (EmpfangeneDaten[2]!=13 || EmpfangeneDaten[3]!=10){
+            winkel = -1;
+        }
+        else {
+            // Umrechnen der Eingabe in einen Winkel
+            EmpfangeneDaten[0]= EmpfangeneDaten[0] - 48;
+            EmpfangeneDaten[1]= EmpfangeneDaten[1] - 48;
+            winkel = ((10 * EmpfangeneDaten[0]) + EmpfangeneDaten[1]);
+        }
+
+        warten = false; // Zuruecksetzten, sodass Nachricht, dass Abgeworfen werden kann beim naechsten Durchlauf wieder kommt
+
+        rueckgabe = winkel;  
+        
     }
-    else{
-        rueckgabe = 0;
+    if (nachfrage == "Knopf"){
+        
+        if (EmpfangeneDaten[0]  == 49 && EmpfangeneDaten[1] == 13 && EmpfangeneDaten[2] == 10){
+
+            warten = false; // Zuruecksetzten, sodass Nachricht, dass Abgeworfen werden kann beim naechsten Durchlauf wieder kommt
+
+            rueckgabe = 1;
+        }
+        else{
+
+            rueckgabe = 0;
+
+        }
     }
-}
-for (int j=0; j<4; j++) {EmpfangeneDaten[j] = 0; }
-stelle = 0;
-return rueckgabe;
+
+    // Zuruecksetzen der Speichervariabel und der Zaehlvariabel
+    for (int j=0; j<4; j++) {EmpfangeneDaten[j] = 0; }
+    stelle = 0;
+
+    return rueckgabe;
 }
