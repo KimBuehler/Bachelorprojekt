@@ -1,7 +1,8 @@
-int EmpfangeneDaten[5] ={0,0,0,0,0}; // die Anzahl der EIntraege kann beliebig abgeaendert werden
+int EmpfangeneDaten[4] ={0,0,0,0}; // die Anzahl der EIntraege kann beliebig abgeaendert werden
 int winkel;
 int stelle =0;
 bool warten = false; 
+int rueckgabe;
 
 /*
 Diese Funktion bildet die Bluetooth-Schnittstelle ab, es koennen beliebig viele (max. 5) ASCII-Zeichen uebermittelt werden. Je nachdem mit welchem Schluesselwort wird das Ausgelesene anders interpretiert.
@@ -21,23 +22,35 @@ int bluetooth (String nachfrage){
         Serial.print(stelle);
         Serial.print(": ");
         Serial.println(EmpfangeneDaten[stelle]);
+        if (EmpfangeneDaten[stelle]!=13 && EmpfangeneDaten[stelle]!=10){
+            if (EmpfangeneDaten[stelle]<48 || EmpfangeneDaten[stelle]>57){
+                Serial.println("Fehlerhafte Eingabe.");
+                rueckgabe =-1;
+            }
+        }
         stelle++;
         delay(5);
     }
-
 if (nachfrage == "Winkel"){
-    winkel = (EmpfangeneDaten[0]-48) * 10 +(EmpfangeneDaten[1]-48);
-    return winkel;
+    delay (1000);
+    EmpfangeneDaten[0]= EmpfangeneDaten[0] - 48;
+    EmpfangeneDaten[1]= EmpfangeneDaten[1] - 48;
+    winkel = ((10 * EmpfangeneDaten[0]) + EmpfangeneDaten[1]);
+    warten = false; 
+    rueckgabe = winkel;  
+    
 }
 if (nachfrage == "Knopf"){
-    warten = false;
-    if (EmpfangeneDaten[0]  ==1){
-        return 1;
+    
+    if (EmpfangeneDaten[0]  ==49){
+        warten = false;
+        rueckgabe = 1;
     }
     else{
-        return 0;
+        rueckgabe = 0;
     }
 }
-for (int j=0; j<5; j++) {EmpfangeneDaten[j] = 0; }
+for (int j=0; j<4; j++) {EmpfangeneDaten[j] = 0; }
 stelle = 0;
+return rueckgabe;
 }

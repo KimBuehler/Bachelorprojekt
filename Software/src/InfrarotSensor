@@ -13,9 +13,9 @@ void Geschwindigkeitsmessung (int PIN_SIGNAL, const double s){
     t0 = micros(); // Erfassen der aktuellen Systemzeit
     do {
         t1 = micros(); // Erfassen der aktuellen Systemzeit
-        wert = digitalRead(PIN_SIGNAL); // Erfassen des aktuellen Wertes der Schranke (Signal kommt an/nicht an) 
-
-        if (wert == 1){
+        wert = analogRead(PIN_SIGNAL); // Erfassen des aktuellen Wertes der Schranke (Signal kommt an/nicht an) 
+        Serial.println("Warten auf Abschuss");
+        if (wert > 950){
             break; // Verlassen der Schleife, wenn Signal unterbrochen
         } 
         else if ((t1-t0)>(2* 1e6)){
@@ -28,13 +28,13 @@ void Geschwindigkeitsmessung (int PIN_SIGNAL, const double s){
 
     do {
         t2 = micros(); // Erfassen der aktuellen Systemzeit
-        wert = digitalRead(PIN_SIGNAL); // Erfassen des aktuellen Wertes der Schranke (Signal kommt an/nicht an) 
-
-        if (t1==0){
+        wert = analogRead(PIN_SIGNAL); // Erfassen des aktuellen Wertes der Schranke (Signal kommt an/nicht an) 
+        Serial.println(wert);
+        if (t1==0 || (t2-t0)>(2* 1e6)){
             t2 = 0;
             break; // Verlassen der Schleife, wenn Zeitueberschreitung
         }        
-        else if (wert == 0){
+        else if (wert < 950){
             break; // Verlassen der Schleife, wenn Signal wieder ankommt
         }
     }while (true);

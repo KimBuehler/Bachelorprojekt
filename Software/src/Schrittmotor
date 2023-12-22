@@ -1,30 +1,36 @@
 // https://starthardware.org/arduino-a4988-nema17/ : Informationen fuer die Steuerung des Schrittmotors
 // https://docs.arduino.cc/built-in-examples/basics/AnalogReadSerial : Dokumentation zum Auslesen eines Potentiometers
 #include <BluetoothSchnittstelle>
-double IstWinkel = 175; // Variabel, die den aktuellen Winkel des Schrittmotors abspeichert
+double IstWinkel; // Variabel, die den aktuellen Winkel des Schrittmotors abspeichert
 int steps; // Variabel, die die berechnete Schrittanzahl abspeichert
 int Wunschwinkel; // Variabel, die ueber eine Schnittstelle eingegeben werden kann und den zukuenftigen Winkel speichert
-const double steigung = 2.84; // Durch Versuch und anschließender linearer Regression ermittelt
-const double wertBei0Grad = 255.75; // Beliebig gewaehlter Wert, bei Montage, aendert sich bei Umbau
+const double steigung = 3.1; // Durch Versuch und anschließender linearer Regression ermittelt
+const double wertBei0Grad = 98; // Beliebig gewaehlter Wert, bei Montage, aendert sich bei Umbau
 
 /*
 Diese Funktion stellt den Abwurfwinkel ein und ueberprueft, welcher Winkel tatsaechlich eingestellt wurde. 
 */
 void Winkeleinstellung (int stepsProUmdrehung, int direction, int step){
-  Serial.println ("Bitte gebe den gewuenschten Winkel ein: ");
-  delay(5000);
-  Wunschwinkel = bluetooth("Winkel"); // Eingabe des Wunschwinkels im Terminal erforderlich, sonst geht das Programm nicht weiter.
   IstWinkel = (analogRead(A1) - wertBei0Grad)/steigung ; // Ueberpruefung und ggf. Korrektur des tatsaechlichen Winkels
+  Serial.println(IstWinkel);
+  Wunschwinkel = bluetooth("Winkel"); // Eingabe des Wunschwinkels im Terminal erforderlich, sonst geht das Programm nicht weiter.
+  if (Wunschwinkel == -1/*|| Wunschwinkel >60 || Wunschwinkel < 20*/ ){ // Wird erfüllt, wenn keine erlaubte Zahl eingegeben wurde
+    Serial.println("Bitte drehe den Schlüssel nochmal auf off und fuehre die Winkeleinstellung neu durch");
+    Wunschwinkel = IstWinkel;
+  }
+  
   // Formatierte Ausgabe des eingestellten Winkels, zur Ueberpruefung, ob der richtige Winkel eingestellt wurde 
   Serial.print("Folgender Winkel wird nun eingestellt: ");
   Serial.println(Wunschwinkel);
   
   // Abgleich der Winkel, Entscheidung in welche Richtung der Motot drehen muss
   if (Wunschwinkel<IstWinkel){
+    Serial.println("Uhrzeigersinn");
     digitalWrite(direction, HIGH); //im Uhrzeigersinn
     steps = round(((IstWinkel-Wunschwinkel) * stepsProUmdrehung)/360); //Umrechnung wie viele Steps gemacht werden
   }
   else if (Wunschwinkel > IstWinkel){
+    Serial.println("Gegen Uhrzeigersinn");
     digitalWrite(direction, LOW); // gegen den Uhrzeigersinn
     steps = round(((Wunschwinkel - IstWinkel)* stepsProUmdrehung) /360); //Umrechnung wie viele Steps gemacht werden
   } else {
@@ -34,9 +40,9 @@ void Winkeleinstellung (int stepsProUmdrehung, int direction, int step){
   // Einstellung des Winkels
     for(int stepCounter = 0; stepCounter < steps; stepCounter++) {
       digitalWrite(step,HIGH);
-      delayMicroseconds(5000);
+      delayMicroseconds(50000);
       digitalWrite(step,LOW);
-      delayMicroseconds(5000);
+      delayMicroseconds(50000);
       
     }
 delay(1000);
@@ -46,5 +52,5 @@ IstWinkel = (analogRead(A1) - wertBei0Grad)/steigung ;
 Serial.print ("Es wurde folgender Winkel in Grad eingestellt: ");
 Serial.println (IstWinkel);
 Serial.print ("Es wurde folgender Poti-Wert ausgelesen: ");
-Serial.println (A1);
+Serial.println (analogRead(A1));
 }
